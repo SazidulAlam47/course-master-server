@@ -7,10 +7,8 @@ const seedAdmin = async () => {
     const hashedPassword = await hashPassword(config.admin_password);
 
     const admin: IUser = {
-        name: 'Admin',
-        email: 'admin@testschool.com',
-        isVerified: true,
-        needPasswordChange: false,
+        name: 'Course Master Admin',
+        email: config.admin_email,
         role: 'admin',
         password: hashedPassword,
     };

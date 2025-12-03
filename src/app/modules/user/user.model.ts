@@ -27,9 +27,6 @@ const userSchema = new Schema<IUser>(
             type: String,
             enum: UserRoles,
         },
-        needPasswordChange: {
-            type: Boolean,
-        },
     },
     {
         timestamps: true,

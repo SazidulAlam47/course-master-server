@@ -8,5 +8,4 @@ export interface IUser {
     password?: string;
     image?: string;
     role?: TUserRole;
-    needPasswordChange?: boolean;
 }

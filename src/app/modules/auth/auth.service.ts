@@ -24,7 +24,6 @@ const registerStudent = async (payload: TStudentRegisterPayload) => {
         password: hashedPassword,
         image: payload.image,
         role: 'student',
-        needPasswordChange: false,
     };
 
     // create the user

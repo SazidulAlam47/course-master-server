@@ -19,6 +19,7 @@ export default {
         reset_pass_token_expires_in: process.env
             .RESET_PASS_TOKEN_EXPIRES_IN as ms.StringValue,
     },
+    admin_email: process.env.ADMIN_EMAIL as string,
     admin_password: process.env.ADMIN_PASSWORD as string,
     client_url: process.env.CLIENT_URL as string,
 };
