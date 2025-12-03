@@ -12,8 +12,8 @@ const createBatch = catchAsync(async (req, res) => {
     });
 });
 
-const getBatch = catchAsync(async (req, res) => {
-    const result = await BatchServices.getBatch(req.params.id);
+const getBatchById = catchAsync(async (req, res) => {
+    const result = await BatchServices.getBatchById(req.params.id);
     sendResponse(res, {
         statusCode: status.OK,
         message: 'Batch retrieved successfully',
@@ -21,8 +21,8 @@ const getBatch = catchAsync(async (req, res) => {
     });
 });
 
-const getAllBatch = catchAsync(async (req, res) => {
-    const result = await BatchServices.getAllBatch();
+const getAllBatches = catchAsync(async (req, res) => {
+    const result = await BatchServices.getAllBatches();
     sendResponse(res, {
         statusCode: status.OK,
         message: 'Batches retrieved successfully',
@@ -50,8 +50,8 @@ const deleteBatch = catchAsync(async (req, res) => {
 
 export const BatchControllers = {
     createBatch,
-    getBatch,
-    getAllBatch,
+    getBatchById,
+    getAllBatches,
     updateBatch,
     deleteBatch,
 };

@@ -6,9 +6,9 @@ import { InstructorValidations } from './instructor.validation';
 
 const router = express.Router();
 
-router.get('/', auth(), InstructorControllers.getAllInstructor);
+router.get('/', auth(), InstructorControllers.getAllInstructors);
 
-router.get('/:id', auth(), InstructorControllers.getInstructor);
+router.get('/:id', auth(), InstructorControllers.getInstructorById);
 
 router.post(
     '/',
@@ -17,7 +17,7 @@ router.post(
     InstructorControllers.createInstructor,
 );
 
-router.put(
+router.patch(
     '/:id',
     auth('admin'),
     validateRequest(InstructorValidations.updateInstructor),

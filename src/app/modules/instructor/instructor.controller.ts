@@ -12,8 +12,8 @@ const createInstructor = catchAsync(async (req, res) => {
     });
 });
 
-const getInstructor = catchAsync(async (req, res) => {
-    const result = await InstructorServices.getInstructor(req.params.id);
+const getInstructorById = catchAsync(async (req, res) => {
+    const result = await InstructorServices.getInstructorById(req.params.id);
     sendResponse(res, {
         statusCode: status.OK,
         message: 'Instructor retrieved successfully',
@@ -21,11 +21,11 @@ const getInstructor = catchAsync(async (req, res) => {
     });
 });
 
-const getAllInstructor = catchAsync(async (req, res) => {
-    const result = await InstructorServices.getAllInstructor();
+const getAllInstructors = catchAsync(async (req, res) => {
+    const result = await InstructorServices.getAllInstructors();
     sendResponse(res, {
         statusCode: status.OK,
-        message: 'Instructor retrieved successfully',
+        message: 'Instructors retrieved successfully',
         data: result,
     });
 });
@@ -53,8 +53,8 @@ const deleteInstructor = catchAsync(async (req, res) => {
 
 export const InstructorControllers = {
     createInstructor,
-    getInstructor,
-    getAllInstructor,
+    getInstructorById,
+    getAllInstructors,
     updateInstructor,
     deleteInstructor,
 };

@@ -6,9 +6,9 @@ import { BatchValidations } from './batch.validation';
 
 const router = express.Router();
 
-router.get('/', auth(), BatchControllers.getAllBatch);
+router.get('/', auth(), BatchControllers.getAllBatches);
 
-router.get('/:id', auth(), BatchControllers.getBatch);
+router.get('/:id', auth(), BatchControllers.getBatchById);
 
 router.post(
     '/',
@@ -17,7 +17,7 @@ router.post(
     BatchControllers.createBatch,
 );
 
-router.put(
+router.patch(
     '/:id',
     auth('admin'),
     validateRequest(BatchValidations.updateBatch),

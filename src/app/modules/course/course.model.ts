@@ -13,7 +13,7 @@ const courseSchema = new Schema<ICourse>(
             required: true,
             trim: true,
         },
-        instructor: {
+        instructorId: {
             type: Schema.Types.ObjectId,
             ref: 'Instructor',
             required: true,
@@ -25,13 +25,15 @@ const courseSchema = new Schema<ICourse>(
             type: Number,
             required: true,
         },
-        category: {
-            type: String,
+        categoryId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Category',
             required: true,
         },
         isPublished: {
-            type: String,
+            type: Boolean,
             required: true,
+            default: false,
         },
     },
     {

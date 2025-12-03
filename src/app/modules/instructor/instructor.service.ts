@@ -6,12 +6,12 @@ const createInstructor = async (payload: IInstructor) => {
     return result;
 };
 
-const getInstructor = async (id: string) => {
+const getInstructorById = async (id: string) => {
     const result = await Instructor.findById(id);
     return result;
 };
 
-const getAllInstructor = async () => {
+const getAllInstructors = async () => {
     const result = await Instructor.find();
     return result;
 };
@@ -30,8 +30,8 @@ const deleteInstructor = async (id: string) => {
 
 export const InstructorServices = {
     createInstructor,
-    getInstructor,
-    getAllInstructor,
+    getInstructorById,
+    getAllInstructors,
     updateInstructor,
     deleteInstructor,
 };

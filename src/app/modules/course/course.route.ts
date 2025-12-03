@@ -6,9 +6,9 @@ import { CourseValidations } from './course.validation';
 
 const router = express.Router();
 
-router.get('/', auth(), CourseControllers.getAllCourse);
+router.get('/', auth(), CourseControllers.getAllCourses);
 
-router.get('/:id', auth(), CourseControllers.getCourse);
+router.get('/:id', auth(), CourseControllers.getCourseById);
 
 router.post(
     '/',
@@ -17,7 +17,7 @@ router.post(
     CourseControllers.createCourse,
 );
 
-router.put(
+router.patch(
     '/:id',
     auth('admin'),
     validateRequest(CourseValidations.updateCourse),
