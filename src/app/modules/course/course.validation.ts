@@ -4,7 +4,7 @@ const createCourse = z.object({
     title: z.string(),
     description: z.string(),
     instructorId: z.string(),
-    thumbnail: z.url().optional(),
+    thumbnail: z.url(),
     price: z.number(),
     categoryId: z.string(),
 });

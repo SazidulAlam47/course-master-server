@@ -8,7 +8,6 @@ const createBatch = z.object({
 });
 
 const updateBatch = z.object({
-    courseId: z.string().optional(),
     number: z.number().optional(),
     startDate: z.coerce.date().optional(),
     endDate: z.coerce.date().optional(),

@@ -20,6 +20,7 @@ const courseSchema = new Schema<ICourse>(
         },
         thumbnail: {
             type: String,
+            required: true,
         },
         price: {
             type: Number,

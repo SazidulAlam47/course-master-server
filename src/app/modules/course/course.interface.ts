@@ -4,7 +4,7 @@ export interface ICourse {
     title: string;
     description: string;
     instructorId: Types.ObjectId;
-    thumbnail?: string;
+    thumbnail: string;
     price: number;
     categoryId: Types.ObjectId;
     isPublished: boolean;

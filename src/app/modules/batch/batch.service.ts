@@ -24,10 +24,6 @@ const getAllBatches = async () => {
 };
 
 const updateBatch = async (id: string, payload: Partial<IBatch>) => {
-    const course = await Course.findById(payload.courseId);
-    if (!course) {
-        throw new ApiError(status.NOT_FOUND, 'Course not found');
-    }
     const result = await Batch.findByIdAndUpdate(id, payload, {
         new: true,
     });

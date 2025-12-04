@@ -32,13 +32,17 @@ const getAllCourses = async () => {
 };
 
 const updateCourse = async (id: string, payload: Partial<ICourse>) => {
-    const category = await Category.findById(payload.categoryId);
-    if (!category) {
-        throw new ApiError(status.NOT_FOUND, 'Category not found');
+    if (payload.categoryId) {
+        const category = await Category.findById(payload.categoryId);
+        if (!category) {
+            throw new ApiError(status.NOT_FOUND, 'Category not found');
+        }
     }
-    const instructor = await Instructor.findById(payload.instructorId);
-    if (!instructor) {
-        throw new ApiError(status.NOT_FOUND, 'Instructor not found');
+    if (payload.instructorId) {
+        const instructor = await Instructor.findById(payload.instructorId);
+        if (!instructor) {
+            throw new ApiError(status.NOT_FOUND, 'Instructor not found');
+        }
     }
     const result = await Course.findByIdAndUpdate(id, payload, {
         new: true,
