@@ -4,6 +4,7 @@ import { Category } from '../category/category.model';
 import { ICourse } from './course.interface';
 import { Course } from './course.model';
 import { Instructor } from '../instructor/instructor.model';
+import { Lesson } from '../lesson/lesson.model';
 
 const createCourse = async (payload: ICourse) => {
     const category = await Category.findById(payload.categoryId);
@@ -23,7 +24,11 @@ const getCourseById = async (id: string) => {
     const result = await Course.findById(id).populate(
         'instructorId categoryId',
     );
-    return result;
+    if (!result) {
+        throw new ApiError(status.NOT_FOUND, 'Course not found');
+    }
+    const lessons = await Lesson.find({ courseId: id }).sort({ order: 1 });
+    return { ...result.toObject(), lessons };
 };
 
 const getAllCourses = async () => {
@@ -32,6 +37,11 @@ const getAllCourses = async () => {
 };
 
 const updateCourse = async (id: string, payload: Partial<ICourse>) => {
+    const course = await Course.findById(id);
+    if (!course) {
+        throw new ApiError(status.NOT_FOUND, 'Course not found');
+    }
+
     if (payload.categoryId) {
         const category = await Category.findById(payload.categoryId);
         if (!category) {
@@ -51,6 +61,10 @@ const updateCourse = async (id: string, payload: Partial<ICourse>) => {
 };
 
 const deleteCourse = async (id: string) => {
+    const course = await Course.findById(id);
+    if (!course) {
+        throw new ApiError(status.NOT_FOUND, 'Course not found');
+    }
     const result = await Course.findByIdAndDelete(id);
     return result;
 };

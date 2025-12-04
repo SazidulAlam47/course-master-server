@@ -14,6 +14,9 @@ const createCategory = async (payload: ICategory) => {
 
 const getCategoryById = async (id: string) => {
     const result = await Category.findById(id);
+    if (!result) {
+        throw new ApiError(status.NOT_FOUND, 'Category not found');
+    }
     return result;
 };
 
@@ -23,8 +26,12 @@ const getAllCategories = async () => {
 };
 
 const updateCategory = async (id: string, payload: Partial<ICategory>) => {
-    const category = await Category.findOne({ name: payload.name });
-    if (category) {
+    const category = await Category.findById(id);
+    if (!category) {
+        throw new ApiError(status.NOT_FOUND, 'Category not found');
+    }
+    const categoryNameExists = await Category.findOne({ name: payload.name });
+    if (categoryNameExists) {
         throw new ApiError(status.CONFLICT, 'Category already exists');
     }
     const result = await Category.findByIdAndUpdate(id, payload, {
@@ -34,6 +41,10 @@ const updateCategory = async (id: string, payload: Partial<ICategory>) => {
 };
 
 const deleteCategory = async (id: string) => {
+    const category = await Category.findById(id);
+    if (!category) {
+        throw new ApiError(status.NOT_FOUND, 'Category not found');
+    }
     const result = await Category.findByIdAndDelete(id);
     return result;
 };

@@ -3,8 +3,8 @@ import { UserRoutes } from '../modules/user/user.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
 import { InstructorRoutes } from '../modules/instructor/instructor.route';
 import { CourseRoutes } from '../modules/course/course.route';
-import { BatchRoutes } from '../modules/batch/batch.route';
 import { CategoryRoutes } from '../modules/category/category.route';
+import { LessonRoutes } from '../modules/lesson/lesson.route';
 
 const router = Router();
 
@@ -26,12 +26,12 @@ const moduleRoutes = [
         route: CourseRoutes,
     },
     {
-        path: '/batches',
-        route: BatchRoutes,
-    },
-    {
         path: '/categories',
         route: CategoryRoutes,
+    },
+    {
+        path: '/lessons',
+        route: LessonRoutes,
     },
 ];
 
