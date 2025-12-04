@@ -9,6 +9,7 @@ import { User } from '../user/user.model';
 import mongoose from 'mongoose';
 import { Payment } from '../payment/payment.model';
 import { IPayment } from '../payment/payment.interface';
+import { Lesson } from '../lesson/lesson.model';
 
 const createEnrollment = async (
     decodedUser: TDecodedUser,
@@ -98,6 +99,41 @@ const getEnrollmentById = async (decodedUser: TDecodedUser, id: string) => {
     return enrollment;
 };
 
+const getMyEnrollments = async (decodedUser: TDecodedUser) => {
+    const enrollments = await Enrollment.find({
+        studentId: decodedUser.id,
+    }).populate({
+        path: 'courseId',
+        populate: {
+            path: 'instructorId',
+        },
+    });
+
+    const result = await Promise.all(
+        enrollments.map(async (enrollment) => {
+            const totalLessons = await Lesson.countDocuments({
+                courseId: enrollment.courseId,
+            });
+
+            const progress =
+                totalLessons > 0
+                    ? Math.round(
+                          (enrollment.completedLessonIndex / totalLessons) *
+                              100,
+                      )
+                    : 0;
+
+            return {
+                ...enrollment.toObject(),
+                totalLessons,
+                progress,
+            };
+        }),
+    );
+
+    return result;
+};
+
 const updateEnrollment = async (
     decodedUser: TDecodedUser,
     id: string,
@@ -123,5 +159,6 @@ const updateEnrollment = async (
 export const EnrollmentServices = {
     createEnrollment,
     getEnrollmentById,
+    getMyEnrollments,
     updateEnrollment,
 };

@@ -6,7 +6,7 @@ import { LessonServices } from './lesson.service';
 const createLesson = catchAsync(async (req, res) => {
     const result = await LessonServices.createLesson(req.body);
     sendResponse(res, {
-        statusCode: status.OK,
+        statusCode: status.CREATED,
         message: 'Lesson created successfully',
         data: result,
     });

@@ -13,6 +13,12 @@ router.post(
     EnrollmentControllers.createEnrollment,
 );
 
+router.get(
+    '/my-enrollments',
+    auth('student'),
+    EnrollmentControllers.getMyEnrollments,
+);
+
 router.get('/:id', auth(), EnrollmentControllers.getEnrollmentById);
 
 router.patch(

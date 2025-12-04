@@ -6,7 +6,7 @@ import { InstructorServices } from './instructor.service';
 const createInstructor = catchAsync(async (req, res) => {
     const result = await InstructorServices.createInstructor(req.body);
     sendResponse(res, {
-        statusCode: status.OK,
+        statusCode: status.CREATED,
         message: 'Instructor created successfully',
         data: result,
     });

@@ -9,7 +9,7 @@ const createEnrollment = catchAsync(async (req, res) => {
         req.body,
     );
     sendResponse(res, {
-        statusCode: status.OK,
+        statusCode: status.CREATED,
         message: 'Enrollment created successfully',
         data: result,
     });
@@ -23,6 +23,15 @@ const getEnrollmentById = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: status.OK,
         message: 'Enrollment retrieved successfully',
+        data: result,
+    });
+});
+
+const getMyEnrollments = catchAsync(async (req, res) => {
+    const result = await EnrollmentServices.getMyEnrollments(req.user);
+    sendResponse(res, {
+        statusCode: status.OK,
+        message: 'Enrollments retrieved successfully',
         data: result,
     });
 });
@@ -43,5 +52,6 @@ const updateEnrollment = catchAsync(async (req, res) => {
 export const EnrollmentControllers = {
     createEnrollment,
     getEnrollmentById,
+    getMyEnrollments,
     updateEnrollment,
 };

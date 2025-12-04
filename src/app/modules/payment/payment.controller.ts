@@ -14,7 +14,7 @@ const initPayment = catchAsync(async (req, res) => {
         baseUrl,
     );
     sendResponse(res, {
-        statusCode: status.OK,
+        statusCode: status.CREATED,
         message: 'Payment initiated successfully',
         data: result,
     });
