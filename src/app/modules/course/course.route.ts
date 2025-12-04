@@ -6,9 +6,13 @@ import { CourseValidations } from './course.validation';
 
 const router = express.Router();
 
-router.get('/', auth(), CourseControllers.getAllCourses);
+router.get('/', CourseControllers.getAllCourses);
+
+router.get('/admin', auth('admin'), CourseControllers.getAllCoursesAdmin);
 
 router.get('/:id', auth(), CourseControllers.getCourseById);
+
+router.get('/:id/public', CourseControllers.getCourseByIdPublic);
 
 router.post(
     '/',

@@ -21,8 +21,26 @@ const getCourseById = catchAsync(async (req, res) => {
     });
 });
 
+const getCourseByIdPublic = catchAsync(async (req, res) => {
+    const result = await CourseServices.getCourseByIdPublic(req.params.id);
+    sendResponse(res, {
+        statusCode: status.OK,
+        message: 'Course retrieved successfully',
+        data: result,
+    });
+});
+
 const getAllCourses = catchAsync(async (req, res) => {
     const result = await CourseServices.getAllCourses();
+    sendResponse(res, {
+        statusCode: status.OK,
+        message: 'Courses retrieved successfully',
+        data: result,
+    });
+});
+
+const getAllCoursesAdmin = catchAsync(async (req, res) => {
+    const result = await CourseServices.getAllCoursesAdmin();
     sendResponse(res, {
         statusCode: status.OK,
         message: 'Courses retrieved successfully',
@@ -51,7 +69,9 @@ const deleteCourse = catchAsync(async (req, res) => {
 export const CourseControllers = {
     createCourse,
     getCourseById,
+    getCourseByIdPublic,
     getAllCourses,
+    getAllCoursesAdmin,
     updateCourse,
     deleteCourse,
 };

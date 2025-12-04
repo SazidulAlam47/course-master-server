@@ -31,7 +31,30 @@ const getCourseById = async (id: string) => {
     return { ...result.toObject(), lessons };
 };
 
+const getCourseByIdPublic = async (id: string) => {
+    const result = await Course.findById(id).populate(
+        'instructorId categoryId',
+    );
+    if (!result) {
+        throw new ApiError(status.NOT_FOUND, 'Course not found');
+    }
+    const lessons = await Lesson.find({ courseId: id }, { title: 1 }).sort({
+        order: 1,
+    });
+    return { ...result.toObject(), lessons };
+};
+
 const getAllCourses = async () => {
+    const filter = {
+        isPublished: true,
+    };
+    const result = await Course.find(filter).populate(
+        'instructorId categoryId',
+    );
+    return result;
+};
+
+const getAllCoursesAdmin = async () => {
     const result = await Course.find().populate('instructorId categoryId');
     return result;
 };
@@ -72,7 +95,9 @@ const deleteCourse = async (id: string) => {
 export const CourseServices = {
     createCourse,
     getCourseById,
+    getCourseByIdPublic,
     getAllCourses,
+    getAllCoursesAdmin,
     updateCourse,
     deleteCourse,
 };
