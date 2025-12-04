@@ -5,6 +5,8 @@ import { InstructorRoutes } from '../modules/instructor/instructor.route';
 import { CourseRoutes } from '../modules/course/course.route';
 import { CategoryRoutes } from '../modules/category/category.route';
 import { LessonRoutes } from '../modules/lesson/lesson.route';
+import { EnrollmentRoutes } from '../modules/enrollment/enrollment.route';
+import { PaymentRoutes } from '../modules/payment/payment.route';
 
 const router = Router();
 
@@ -32,6 +34,14 @@ const moduleRoutes = [
     {
         path: '/lessons',
         route: LessonRoutes,
+    },
+    {
+        path: '/enrollments',
+        route: EnrollmentRoutes,
+    },
+    {
+        path: '/payment',
+        route: PaymentRoutes,
     },
 ];
 

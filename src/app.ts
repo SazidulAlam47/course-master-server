@@ -17,16 +17,19 @@ app.use(
     }),
 );
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
 const test = (req: Request, res: Response) => {
     res.send({ message: 'Course Master Server is Running...' });
 };
 
+export const basePath = '/api/v1';
+
 // test route
 app.get('/', test);
 
 // application routes
-app.use('/api/v1', router);
+app.use(basePath, router);
 
 // global error handler
 app.use(globalErrorHandler);

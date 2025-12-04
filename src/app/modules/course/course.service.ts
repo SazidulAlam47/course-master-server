@@ -38,7 +38,10 @@ const getCourseByIdPublic = async (id: string) => {
     if (!result) {
         throw new ApiError(status.NOT_FOUND, 'Course not found');
     }
-    const lessons = await Lesson.find({ courseId: id }, { title: 1 }).sort({
+    const lessons = await Lesson.find(
+        { courseId: id },
+        { title: 1, duration: 1 },
+    ).sort({
         order: 1,
     });
     return { ...result.toObject(), lessons };

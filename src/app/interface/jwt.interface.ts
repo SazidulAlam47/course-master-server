@@ -8,5 +8,4 @@ export type TDecodedUser = {
     image?: string;
     role: TUserRole;
     hasPassword: boolean;
-    needPasswordChange: boolean;
 } & JwtPayload;

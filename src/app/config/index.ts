@@ -22,4 +22,8 @@ export default {
     admin_email: process.env.ADMIN_EMAIL as string,
     admin_password: process.env.ADMIN_PASSWORD as string,
     client_url: process.env.CLIENT_URL as string,
+    ssl: {
+        storeId: process.env.STORE_ID,
+        storePass: process.env.STORE_PASS,
+    },
 };
