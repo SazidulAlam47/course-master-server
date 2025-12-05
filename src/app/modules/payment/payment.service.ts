@@ -144,7 +144,7 @@ const paymentFailed = async (payload: SSLValidationPayload) => {
     await Payment.updateOne(
         { _id: payment._id },
         {
-            paymentGatewayData: payload as any,
+            paymentGatewayData: JSON.stringify(payload),
         },
     );
 };
@@ -167,7 +167,7 @@ const paymentCancelled = async (payload: SSLValidationPayload) => {
     await Payment.updateOne(
         { _id: payment._id },
         {
-            paymentGatewayData: payload as any,
+            paymentGatewayData: JSON.stringify(payload),
         },
     );
 };
