@@ -127,6 +127,7 @@ const getEnrollmentById = async (decodedUser: TDecodedUser, id: string) => {
 const getMyEnrollments = async (decodedUser: TDecodedUser) => {
     const enrollments = await Enrollment.find({
         studentId: decodedUser.id,
+        paymentStatus: 'paid',
     }).populate({
         path: 'courseId',
         populate: {
