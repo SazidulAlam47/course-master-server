@@ -9,6 +9,7 @@ import { EnrollmentRoutes } from '../modules/enrollment/enrollment.route';
 import { PaymentRoutes } from '../modules/payment/payment.route';
 import { QuizAttemptRoutes } from '../modules/quizAttempt/quizAttempt.route';
 import { AssignmentRoutes } from '../modules/assignment/assignment.route';
+import { MetaRoutes } from '../modules/meta/meta.route';
 
 const router = Router();
 
@@ -52,6 +53,10 @@ const moduleRoutes = [
     {
         path: '/assignments',
         route: AssignmentRoutes,
+    },
+    {
+        path: '/meta',
+        route: MetaRoutes,
     },
 ];
 
