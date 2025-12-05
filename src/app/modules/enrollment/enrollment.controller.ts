@@ -36,11 +36,10 @@ const getMyEnrollments = catchAsync(async (req, res) => {
     });
 });
 
-const updateEnrollment = catchAsync(async (req, res) => {
-    const result = await EnrollmentServices.updateEnrollment(
+const updateEnrollmentCompletedOrder = catchAsync(async (req, res) => {
+    const result = await EnrollmentServices.updateEnrollmentCompletedOrder(
         req.user,
         req.params.id,
-        req.body,
     );
     sendResponse(res, {
         statusCode: status.OK,
@@ -53,5 +52,5 @@ export const EnrollmentControllers = {
     createEnrollment,
     getEnrollmentById,
     getMyEnrollments,
-    updateEnrollment,
+    updateEnrollmentCompletedOrder,
 };

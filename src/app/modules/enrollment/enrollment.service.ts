@@ -101,16 +101,16 @@ const getEnrollmentById = async (decodedUser: TDecodedUser, id: string) => {
     }
 
     const totalLessons = await Lesson.countDocuments({
-        courseId: enrollment.courseId,
+        courseId: enrollment.courseId._id,
     });
 
     const progress =
         totalLessons > 0
-            ? Math.round((enrollment.completedLessonIndex / totalLessons) * 100)
+            ? Math.round((enrollment.completedLessonOrder / totalLessons) * 100)
             : 0;
 
     const lessons = await Lesson.find(
-        { courseId: enrollment.courseId },
+        { courseId: enrollment.courseId._id },
         { title: 1, duration: 1, type: 1, order: 1 },
     ).sort({
         order: 1,
@@ -143,7 +143,7 @@ const getMyEnrollments = async (decodedUser: TDecodedUser) => {
             const progress =
                 totalLessons > 0
                     ? Math.round(
-                          (enrollment.completedLessonIndex / totalLessons) *
+                          (enrollment.completedLessonOrder / totalLessons) *
                               100,
                       )
                     : 0;
@@ -159,10 +159,9 @@ const getMyEnrollments = async (decodedUser: TDecodedUser) => {
     return result;
 };
 
-const updateEnrollment = async (
+const updateEnrollmentCompletedOrder = async (
     decodedUser: TDecodedUser,
     id: string,
-    payload: Partial<IEnrollment>,
 ) => {
     const enrollment = await Enrollment.findById(id);
 
@@ -174,6 +173,27 @@ const updateEnrollment = async (
         throw new ApiError(status.FORBIDDEN, 'Forbidden access');
     }
 
+    const lesson = await Lesson.findOne({
+        courseId: enrollment.courseId,
+        order: enrollment.completedLessonOrder + 1,
+    });
+    if (!lesson) {
+        throw new ApiError(
+            status.BAD_REQUEST,
+            'No further lessons to complete',
+        );
+    }
+    if (!lesson.videoId) {
+        throw new ApiError(
+            status.BAD_REQUEST,
+            'This lesson does not have a video to watch',
+        );
+    }
+
+    const payload = {
+        completedLessonOrder: enrollment.completedLessonOrder + 1,
+    };
+
     const result = await Enrollment.findByIdAndUpdate(id, payload, {
         new: true,
     });
@@ -184,5 +204,5 @@ export const EnrollmentServices = {
     createEnrollment,
     getEnrollmentById,
     getMyEnrollments,
-    updateEnrollment,
+    updateEnrollmentCompletedOrder,
 };

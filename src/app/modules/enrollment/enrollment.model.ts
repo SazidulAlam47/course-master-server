@@ -14,7 +14,7 @@ const enrollmentSchema = new Schema<IEnrollment>(
             ref: 'Course',
             required: true,
         },
-        completedLessonIndex: {
+        completedLessonOrder: {
             type: Number,
             required: true,
             default: 0,

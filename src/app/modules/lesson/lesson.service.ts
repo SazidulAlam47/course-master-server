@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import status from 'http-status';
 import ApiError from '../../errors/ApiError';
 import { Course } from '../course/course.model';
@@ -38,7 +39,7 @@ const getLessonById = async (decodedUser: TDecodedUser, id: string) => {
             'You are not enrolled in this course',
         );
     }
-    if (enrollment.completedLessonIndex + 1 < result.order) {
+    if (enrollment.completedLessonOrder + 1 < result.order) {
         throw new ApiError(status.FORBIDDEN, 'Access to this lesson is locked');
     }
     return result;
@@ -59,8 +60,22 @@ const getLessonByOrder = async (decodedUser: TDecodedUser, order: number) => {
             'You are not enrolled in this course',
         );
     }
-    if (enrollment.completedLessonIndex + 1 < order) {
+    if (enrollment.completedLessonOrder + 1 < order) {
         throw new ApiError(status.FORBIDDEN, 'Access to this lesson is locked');
+    }
+
+    if (
+        result.quizQuestions?.length &&
+        enrollment.completedLessonOrder + 1 === order
+    ) {
+        // send lesson with quiz questions without answers
+        const lessonWithoutAnswers = result.toObject();
+        lessonWithoutAnswers.quizQuestions =
+            lessonWithoutAnswers.quizQuestions?.map((quiz) => ({
+                question: quiz.question,
+                options: quiz.options,
+            })) as any;
+        return lessonWithoutAnswers;
     }
 
     return result;

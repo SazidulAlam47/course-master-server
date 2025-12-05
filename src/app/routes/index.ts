@@ -7,6 +7,7 @@ import { CategoryRoutes } from '../modules/category/category.route';
 import { LessonRoutes } from '../modules/lesson/lesson.route';
 import { EnrollmentRoutes } from '../modules/enrollment/enrollment.route';
 import { PaymentRoutes } from '../modules/payment/payment.route';
+import { QuizAttemptRoutes } from '../modules/quizAttempt/quizAttempt.route';
 
 const router = Router();
 
@@ -42,6 +43,10 @@ const moduleRoutes = [
     {
         path: '/payment',
         route: PaymentRoutes,
+    },
+    {
+        path: '/quiz-attempts',
+        route: QuizAttemptRoutes,
     },
 ];
 

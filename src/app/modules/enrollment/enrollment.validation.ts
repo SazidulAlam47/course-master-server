@@ -4,11 +4,6 @@ const createEnrollment = z.object({
     courseId: z.string(),
 });
 
-const updateEnrollment = z.object({
-    completedLessonIndex: z.number(),
-});
-
 export const EnrollmentValidations = {
     createEnrollment,
-    updateEnrollment,
 };

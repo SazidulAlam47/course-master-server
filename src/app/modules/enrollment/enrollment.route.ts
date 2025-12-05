@@ -24,8 +24,7 @@ router.get('/:id', auth(), EnrollmentControllers.getEnrollmentById);
 router.patch(
     '/:id',
     auth('student'),
-    validateRequest(EnrollmentValidations.updateEnrollment),
-    EnrollmentControllers.updateEnrollment,
+    EnrollmentControllers.updateEnrollmentCompletedOrder,
 );
 
 export const EnrollmentRoutes = router;
