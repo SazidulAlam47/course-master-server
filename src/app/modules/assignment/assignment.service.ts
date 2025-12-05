@@ -24,6 +24,7 @@ const createAssignment = async (
     const enrollment = await Enrollment.findOne({
         studentId: decodedUser.id,
         courseId: lesson.courseId,
+        paymentStatus: 'paid',
     });
 
     if (!enrollment) {
@@ -76,7 +77,7 @@ const createAssignment = async (
         const updatedEnrollment = await Enrollment.findByIdAndUpdate(
             enrollment._id,
             {
-                completedLessonOrder: enrollment.completedLessonOrder + 1,
+                $inc: { completedLessonOrder: 1 },
             },
             { session, new: true },
         );
