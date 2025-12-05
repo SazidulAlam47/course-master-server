@@ -100,6 +100,13 @@ const getEnrollmentById = async (decodedUser: TDecodedUser, id: string) => {
         throw new ApiError(status.FORBIDDEN, 'Forbidden access');
     }
 
+    if (decodedUser.role === 'student' && enrollment.paymentStatus !== 'paid') {
+        throw new ApiError(
+            status.FORBIDDEN,
+            'Payment not completed for this enrollment',
+        );
+    }
+
     const totalLessons = await Lesson.countDocuments({
         courseId: enrollment.courseId._id,
     });
@@ -172,6 +179,13 @@ const updateEnrollmentCompletedOrder = async (
 
     if (enrollment.studentId.toString() !== decodedUser.id) {
         throw new ApiError(status.FORBIDDEN, 'Forbidden access');
+    }
+
+    if (decodedUser.role === 'student' && enrollment.paymentStatus !== 'paid') {
+        throw new ApiError(
+            status.FORBIDDEN,
+            'Payment not completed for this enrollment',
+        );
     }
 
     const lesson = await Lesson.findOne({
