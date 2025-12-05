@@ -33,15 +33,6 @@ const getLessonByOrder = catchAsync(async (req, res) => {
     });
 });
 
-const getAllLessons = catchAsync(async (req, res) => {
-    const result = await LessonServices.getAllLessons();
-    sendResponse(res, {
-        statusCode: status.OK,
-        message: 'Lessons retrieved successfully',
-        data: result,
-    });
-});
-
 const updateLesson = catchAsync(async (req, res) => {
     const result = await LessonServices.updateLesson(req.params.id, req.body);
     sendResponse(res, {
@@ -64,7 +55,6 @@ export const LessonControllers = {
     createLesson,
     getLessonById,
     getLessonByOrder,
-    getAllLessons,
     updateLesson,
     deleteLesson,
 };

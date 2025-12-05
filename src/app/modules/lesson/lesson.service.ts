@@ -32,6 +32,7 @@ const getLessonById = async (decodedUser: TDecodedUser, id: string) => {
     const enrollment = await Enrollment.findOne({
         studentId: decodedUser.id,
         courseId: result.courseId._id,
+        paymentStatus: 'paid',
     });
     if (!enrollment) {
         throw new ApiError(
@@ -42,6 +43,21 @@ const getLessonById = async (decodedUser: TDecodedUser, id: string) => {
     if (enrollment.completedLessonOrder + 1 < result.order) {
         throw new ApiError(status.FORBIDDEN, 'Access to this lesson is locked');
     }
+
+    if (
+        result.quizQuestions?.length &&
+        enrollment.completedLessonOrder + 1 === result.order
+    ) {
+        // send lesson with quiz questions without answers
+        const lessonWithoutAnswers = result.toObject();
+        lessonWithoutAnswers.quizQuestions =
+            lessonWithoutAnswers.quizQuestions?.map((quiz) => ({
+                question: quiz.question,
+                options: quiz.options,
+            })) as any;
+        return lessonWithoutAnswers;
+    }
+
     return result;
 };
 
@@ -53,6 +69,7 @@ const getLessonByOrder = async (decodedUser: TDecodedUser, order: number) => {
     const enrollment = await Enrollment.findOne({
         studentId: decodedUser.id,
         courseId: result.courseId._id,
+        paymentStatus: 'paid',
     });
     if (!enrollment) {
         throw new ApiError(
@@ -81,11 +98,6 @@ const getLessonByOrder = async (decodedUser: TDecodedUser, order: number) => {
     return result;
 };
 
-const getAllLessons = async () => {
-    const result = await Lesson.find().populate('courseId');
-    return result;
-};
-
 const updateLesson = async (id: string, payload: Partial<ILesson>) => {
     const lesson = await Lesson.findById(id);
     if (!lesson) {
@@ -110,7 +122,6 @@ export const LessonServices = {
     createLesson,
     getLessonById,
     getLessonByOrder,
-    getAllLessons,
     updateLesson,
     deleteLesson,
 };
