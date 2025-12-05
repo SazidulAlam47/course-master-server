@@ -44,6 +44,7 @@ const lessonSchema = new Schema<ILesson>(
         order: {
             type: Number,
             required: true,
+            unique: true,
         },
         videoId: {
             type: String,

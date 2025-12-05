@@ -81,8 +81,12 @@ const createEnrollment = async (
 };
 
 const getEnrollmentById = async (decodedUser: TDecodedUser, id: string) => {
-    const enrollment =
-        await Enrollment.findById(id).populate('studentId courseId');
+    const enrollment = await Enrollment.findById(id).populate({
+        path: 'courseId',
+        populate: {
+            path: 'instructorId',
+        },
+    });
 
     if (!enrollment) {
         throw new ApiError(status.NOT_FOUND, 'Enrollment not found');
@@ -96,7 +100,28 @@ const getEnrollmentById = async (decodedUser: TDecodedUser, id: string) => {
         throw new ApiError(status.FORBIDDEN, 'Forbidden access');
     }
 
-    return enrollment;
+    const totalLessons = await Lesson.countDocuments({
+        courseId: enrollment.courseId,
+    });
+
+    const progress =
+        totalLessons > 0
+            ? Math.round((enrollment.completedLessonIndex / totalLessons) * 100)
+            : 0;
+
+    const lessons = await Lesson.find(
+        { courseId: enrollment.courseId },
+        { title: 1, duration: 1, type: 1, order: 1 },
+    ).sort({
+        order: 1,
+    });
+
+    return {
+        ...enrollment.toObject(),
+        totalLessons,
+        progress,
+        lessons,
+    };
 };
 
 const getMyEnrollments = async (decodedUser: TDecodedUser) => {
@@ -139,8 +164,7 @@ const updateEnrollment = async (
     id: string,
     payload: Partial<IEnrollment>,
 ) => {
-    const enrollment =
-        await Enrollment.findById(id).populate('studentId courseId');
+    const enrollment = await Enrollment.findById(id);
 
     if (!enrollment) {
         throw new ApiError(status.NOT_FOUND, 'Enrollment not found');

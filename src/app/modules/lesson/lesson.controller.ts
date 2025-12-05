@@ -13,7 +13,19 @@ const createLesson = catchAsync(async (req, res) => {
 });
 
 const getLessonById = catchAsync(async (req, res) => {
-    const result = await LessonServices.getLessonById(req.params.id);
+    const result = await LessonServices.getLessonById(req.user, req.params.id);
+    sendResponse(res, {
+        statusCode: status.OK,
+        message: 'Lesson retrieved successfully',
+        data: result,
+    });
+});
+
+const getLessonByOrder = catchAsync(async (req, res) => {
+    const result = await LessonServices.getLessonByOrder(
+        req.user,
+        Number(req.params.order),
+    );
     sendResponse(res, {
         statusCode: status.OK,
         message: 'Lesson retrieved successfully',
@@ -51,6 +63,7 @@ const deleteLesson = catchAsync(async (req, res) => {
 export const LessonControllers = {
     createLesson,
     getLessonById,
+    getLessonByOrder,
     getAllLessons,
     updateLesson,
     deleteLesson,

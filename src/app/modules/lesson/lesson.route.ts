@@ -7,6 +7,7 @@ import { LessonValidations } from './lesson.validation';
 const router = express.Router();
 
 router.get('/:id', auth(), LessonControllers.getLessonById);
+router.get('/order/:order', auth(), LessonControllers.getLessonByOrder);
 
 router.post(
     '/',

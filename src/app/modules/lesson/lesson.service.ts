@@ -3,6 +3,8 @@ import ApiError from '../../errors/ApiError';
 import { Course } from '../course/course.model';
 import { ILesson } from './lesson.interface';
 import { Lesson } from './lesson.model';
+import { Enrollment } from '../enrollment/enrollment.model';
+import { TDecodedUser } from '../../interface/jwt.interface';
 
 const createLesson = async (payload: ILesson) => {
     const course = await Course.findById(payload.courseId);
@@ -21,11 +23,46 @@ const createLesson = async (payload: ILesson) => {
     return result;
 };
 
-const getLessonById = async (id: string) => {
+const getLessonById = async (decodedUser: TDecodedUser, id: string) => {
     const result = await Lesson.findById(id).populate('courseId');
-    if(!result){
+    if (!result) {
         throw new ApiError(status.NOT_FOUND, 'Lesson not found');
     }
+    const enrollment = await Enrollment.findOne({
+        studentId: decodedUser.id,
+        courseId: result.courseId._id,
+    });
+    if (!enrollment) {
+        throw new ApiError(
+            status.FORBIDDEN,
+            'You are not enrolled in this course',
+        );
+    }
+    if (enrollment.completedLessonIndex + 1 < result.order) {
+        throw new ApiError(status.FORBIDDEN, 'Access to this lesson is locked');
+    }
+    return result;
+};
+
+const getLessonByOrder = async (decodedUser: TDecodedUser, order: number) => {
+    const result = await Lesson.findOne({ order }).populate('courseId');
+    if (!result) {
+        throw new ApiError(status.NOT_FOUND, 'Lesson not found');
+    }
+    const enrollment = await Enrollment.findOne({
+        studentId: decodedUser.id,
+        courseId: result.courseId._id,
+    });
+    if (!enrollment) {
+        throw new ApiError(
+            status.FORBIDDEN,
+            'You are not enrolled in this course',
+        );
+    }
+    if (enrollment.completedLessonIndex + 1 < order) {
+        throw new ApiError(status.FORBIDDEN, 'Access to this lesson is locked');
+    }
+
     return result;
 };
 
@@ -57,6 +94,7 @@ const deleteLesson = async (id: string) => {
 export const LessonServices = {
     createLesson,
     getLessonById,
+    getLessonByOrder,
     getAllLessons,
     updateLesson,
     deleteLesson,

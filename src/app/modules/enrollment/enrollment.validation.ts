@@ -5,7 +5,7 @@ const createEnrollment = z.object({
 });
 
 const updateEnrollment = z.object({
-    completedLessonIndex: z.number().optional(),
+    completedLessonIndex: z.number(),
 });
 
 export const EnrollmentValidations = {
