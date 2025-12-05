@@ -3,21 +3,22 @@ import status from 'http-status';
 import ApiError from '../../errors/ApiError';
 import { Lesson } from '../lesson/lesson.model';
 import { Enrollment } from '../enrollment/enrollment.model';
-import { QuizAttempt } from './quizAttempt.model';
+import { Assignment } from './assignment.model';
 import { TDecodedUser } from '../../interface/jwt.interface';
 import mongoose from 'mongoose';
+import { ICreateAssignmentPayload } from './assignment.interface';
 
-const createQuizAttempt = async (
+const createAssignment = async (
     decodedUser: TDecodedUser,
-    payload: { lessonId: string; submittedAnswers: number[] },
+    payload: ICreateAssignmentPayload,
 ) => {
     const lesson = await Lesson.findById(payload.lessonId);
     if (!lesson) {
         throw new ApiError(status.NOT_FOUND, 'Lesson not found');
     }
 
-    if (!lesson?.quizQuestions || !lesson.quizQuestions?.length) {
-        throw new ApiError(status.BAD_REQUEST, 'This lesson has no quiz');
+    if (!lesson.assignmentTask) {
+        throw new ApiError(status.BAD_REQUEST, 'This lesson has no assignment');
     }
 
     const enrollment = await Enrollment.findOne({
@@ -32,54 +33,42 @@ const createQuizAttempt = async (
         );
     }
 
-    // Check if already attempted
-    const existingAttempt = await QuizAttempt.findOne({
+    // Check if already submitted
+    const existingAssignment = await Assignment.findOne({
         studentId: decodedUser.id,
         lessonId: payload.lessonId,
     });
 
-    if (existingAttempt) {
+    if (existingAssignment) {
         throw new ApiError(
             status.CONFLICT,
-            'You have already attempted this quiz',
+            'You have already submitted this assignment',
         );
     }
-
-    // Calculate score
-    const totalQuestions = lesson.quizQuestions.length;
-    let correctAnswers = 0;
-
-    lesson.quizQuestions.forEach((question, index) => {
-        if (question.correctAnswer === payload.submittedAnswers[index]) {
-            correctAnswers++;
-        }
-    });
 
     const session = await mongoose.startSession();
 
     try {
         session.startTransaction();
 
-        // Create quiz attempt (transaction-1)
-        const quizAttempt = await QuizAttempt.create(
+        // Create assignment (transaction-1)
+        const assignment = await Assignment.create(
             [
                 {
                     studentId: decodedUser.id,
                     courseId: lesson.courseId,
                     lessonId: payload.lessonId,
                     enrollmentId: enrollment._id,
-                    submittedAnswers: payload.submittedAnswers,
-                    score: correctAnswers,
-                    totalQuestions,
+                    submissionText: payload.submissionText,
                 },
             ],
             { session },
         );
 
-        if (!quizAttempt.length) {
+        if (!assignment.length) {
             throw new ApiError(
                 status.BAD_REQUEST,
-                'Failed to create quiz attempt',
+                'Failed to create assignment',
             );
         }
 
@@ -102,7 +91,7 @@ const createQuizAttempt = async (
         await session.commitTransaction();
         await session.endSession();
 
-        return quizAttempt[0];
+        return assignment[0];
     } catch (err: any) {
         await session.abortTransaction();
         await session.endSession();
@@ -113,29 +102,53 @@ const createQuizAttempt = async (
     }
 };
 
-const getQuizAttemptByLessonId = async (
+const updateAssignment = async (id: string, feedback: string) => {
+    const assignment = await Assignment.findById(id);
+    if (!assignment) {
+        throw new ApiError(status.NOT_FOUND, 'Assignment not found');
+    }
+
+    const result = await Assignment.findByIdAndUpdate(
+        id,
+        { feedback },
+        { new: true },
+    );
+
+    return result;
+};
+
+const getAssignmentByLessonId = async (
     decodedUser: TDecodedUser,
     lessonId: string,
 ) => {
     const query: Record<string, unknown> = { lessonId };
 
-    // If student, only show their own quiz attempts
+    // If student, only show their own assignments
     if (decodedUser.role === 'student') {
         query.studentId = decodedUser.id;
     }
 
-    const quizAttempt = await QuizAttempt.findOne(query).populate(
+    const assignment = await Assignment.findOne(query).populate(
         'studentId courseId lessonId enrollmentId',
     );
 
-    if (!quizAttempt) {
-        throw new ApiError(status.NOT_FOUND, 'Quiz attempt not found');
+    if (!assignment) {
+        throw new ApiError(status.NOT_FOUND, 'Assignment not found');
     }
 
-    return quizAttempt;
+    return assignment;
 };
 
-export const QuizAttemptServices = {
-    createQuizAttempt,
-    getQuizAttemptByLessonId,
+const getAllAssignments = async () => {
+    const result = await Assignment.find().populate(
+        'studentId courseId lessonId enrollmentId',
+    );
+    return result;
+};
+
+export const AssignmentServices = {
+    createAssignment,
+    updateAssignment,
+    getAssignmentByLessonId,
+    getAllAssignments,
 };
