@@ -6,12 +6,7 @@ import { EnrollmentValidations } from './enrollment.validation';
 
 const router = express.Router();
 
-router.post(
-    '/',
-    auth('student'),
-    validateRequest(EnrollmentValidations.createEnrollment),
-    EnrollmentControllers.createEnrollment,
-);
+router.get('/', auth('admin'), EnrollmentControllers.getAllEnrollments);
 
 router.get(
     '/my-enrollments',
@@ -20,6 +15,13 @@ router.get(
 );
 
 router.get('/:id', auth(), EnrollmentControllers.getEnrollmentById);
+
+router.post(
+    '/',
+    auth('student'),
+    validateRequest(EnrollmentValidations.createEnrollment),
+    EnrollmentControllers.createEnrollment,
+);
 
 router.patch(
     '/:id',

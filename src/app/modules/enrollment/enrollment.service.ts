@@ -200,9 +200,45 @@ const updateEnrollmentCompletedOrder = async (
     return result;
 };
 
+const getAllEnrollments = async () => {
+    const enrollments = await Enrollment.find({ paymentStatus: 'paid' })
+        .populate({
+            path: 'courseId',
+            populate: {
+                path: 'instructorId',
+            },
+        })
+        .populate('studentId');
+
+    const result = await Promise.all(
+        enrollments.map(async (enrollment) => {
+            const totalLessons = await Lesson.countDocuments({
+                courseId: enrollment.courseId,
+            });
+
+            const progress =
+                totalLessons > 0
+                    ? Math.round(
+                          (enrollment.completedLessonOrder / totalLessons) *
+                              100,
+                      )
+                    : 0;
+
+            return {
+                ...enrollment.toObject(),
+                totalLessons,
+                progress,
+            };
+        }),
+    );
+
+    return result;
+};
+
 export const EnrollmentServices = {
     createEnrollment,
     getEnrollmentById,
     getMyEnrollments,
     updateEnrollmentCompletedOrder,
+    getAllEnrollments,
 };

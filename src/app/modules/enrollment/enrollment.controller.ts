@@ -48,9 +48,19 @@ const updateEnrollmentCompletedOrder = catchAsync(async (req, res) => {
     });
 });
 
+const getAllEnrollments = catchAsync(async (req, res) => {
+    const result = await EnrollmentServices.getAllEnrollments();
+    sendResponse(res, {
+        statusCode: status.OK,
+        message: 'Enrollments retrieved successfully',
+        data: result,
+    });
+});
+
 export const EnrollmentControllers = {
     createEnrollment,
     getEnrollmentById,
     getMyEnrollments,
     updateEnrollmentCompletedOrder,
+    getAllEnrollments,
 };
